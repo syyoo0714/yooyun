@@ -10,7 +10,7 @@ import { writings, publishedCases } from "@/data/cases";
 export const metadata: Metadata = {
   title: "CV · 경력기술서",
   description:
-    "유연 변호사·변리사 경력기술서 — 학력·자격·경력, 특허 실무 이력, 수행사건 146건, 저술·연재·강연, 대외활동.",
+    "유연 변호사·변리사 경력기술서 — 학력·자격·경력, 특허 실무 이력, 수행사건 149건, 저술·연재·강연, 대외활동.",
 };
 
 /**
@@ -144,7 +144,7 @@ export default async function CvPage() {
             </ul>
           </Block>
 
-          <Block no="17" title="부록 — 홈페이지 기게시 성공사례">
+          <Block no="17" title="부록 — 홈페이지에 이미 게시된 성공사례">
             <div className="tbl-wrap">
               <table className="tbl">
                 <thead>

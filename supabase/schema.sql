@@ -125,7 +125,7 @@ do $$
 declare
   t text;
   -- 관리자 uid. scripts/create-admin.mjs 로 계정을 만든 뒤 이 값을 교체하고 다시 실행한다.
-  admin_uid constant text := '00000000-0000-0000-0000-000000000000';
+  admin_uid constant text := '1beecade-40e6-4e40-870f-ecc6da8581a8';
 begin
   -- 공개 읽기 + 관리자 쓰기
   foreach t in array array[

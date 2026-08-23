@@ -11,7 +11,7 @@ const PANELS = [
   { href: "/admin/profile", label: "프로필 · 연락처", note: "이름·소개·연락처·지표", ready: false },
   { href: "/admin/timeline", label: "학력 · 자격 · 경력", note: "연혁 3종", ready: false },
   { href: "/admin/practice", label: "업무분야", note: "6개 분야 · 태그", ready: false },
-  { href: "/admin/cases", label: "수행사건", note: "146건 · 결과 표기", ready: false },
+  { href: "/admin/cases", label: "수행사건", note: "149건 · 결과 표기", ready: false },
   { href: "/admin/notes", label: "기업법 노트", note: "119편 · 발행 여부", ready: false },
   { href: "/admin/inquiries", label: "상담 문의", note: "접수함", ready: false },
 ];

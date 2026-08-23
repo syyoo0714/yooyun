@@ -52,7 +52,7 @@ export default async function CasesPage() {
           <div className="section-head">
             <div>
               <span className="folio">부록</span>
-              <h2>법무법인 리브로 홈페이지 기게시 성공사례</h2>
+              <h2>법무법인 리브로 홈페이지에 이미 게시된 성공사례</h2>
             </div>
           </div>
           <div className="tbl-wrap">

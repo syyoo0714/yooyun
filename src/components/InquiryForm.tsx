@@ -12,6 +12,7 @@ const CATEGORIES = [
   "직무발명 · 기술거래 · IP 실사",
   "기업법무 · 계약 분쟁",
   "가상자산 · 개인정보 · 기타",
+  "약국 · 의료",
 ];
 
 export default function InquiryForm() {
@@ -35,7 +36,7 @@ export default function InquiryForm() {
       <label className="field">
         <span>문의 분야</span>
         <select className="select" name="category" defaultValue="">
-          <option value="">선택하지 않음</option>
+          <option value="">선택해 주세요</option>
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>
               {c}

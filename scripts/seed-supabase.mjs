@@ -3,6 +3,10 @@
  *
  *   node scripts/seed-supabase.mjs            # 전체
  *   node scripts/seed-supabase.mjs notes      # 노트만
+ *     (이름: profile · timeline · practice · cases · writings · notes)
+ *
+ * ⚠️ patentPractice(career.ts) 와 부록 성공사례는 대응 테이블이 없다 —
+ *    페이지가 TS · cv.generated.json 에서 직접 읽는다.
  *
  * 필요 env (.env.local):
  *   NEXT_PUBLIC_SUPABASE_URL
@@ -54,17 +58,78 @@ async function run(name, fn) {
 }
 
 // ---- profile / timeline / practice ------------------------------------
-async function seedProfile() {
-  const { profile } = await import("../src/data/profile.ts").catch(() => ({}));
-  // ts 직접 import가 안 되는 환경을 위해 JSON 경유가 아닌 하드 복사는 하지 않는다.
-  // 대신 CV 정본이 이미 폴백으로 동작하므로 profile 은 관리자 화면에서 채우는 것을 기본으로 한다.
-  if (!profile) {
-    console.log("  (profile 은 관리자 화면에서 입력하십시오 — 폴백이 이미 CV 정본입니다)");
-    return 0;
+/**
+ * src/data/*.ts 를 그대로 읽는다. Node 22.6+ 의 타입 스트리핑으로 .ts 를 직접 import 한다.
+ * (그 이전 버전에서는 여기서 던진다 — 조용히 건너뛰면 DB가 빈 채로 남는다.)
+ */
+async function loadTs(rel) {
+  try {
+    return await import(rel);
+  } catch (e) {
+    throw new Error(`${rel} 를 읽지 못했습니다(Node ${process.versions.node}). Node 22.6+ 필요. — ${e.message}`);
   }
-  const { error } = await db.from("profile").upsert({ id: 1, ...profile });
+}
+
+async function seedProfile() {
+  const { profile } = await loadTs("../src/data/profile.ts");
+  // ⚠️ 컬럼은 snake_case 다(supabase/schema.sql). TS 객체를 그대로 펼치면 컬럼명이 어긋난다.
+  //    memberships · languages · publicRoles 는 대응 컬럼이 없다 —
+  //    getProfile() 이 폴백 객체 위에 DB 값을 얹으므로 계속 CV 정본에서 온다.
+  const { error } = await db.from("profile").upsert({
+    id: 1,
+    name_ko: profile.nameKo,
+    name_en: profile.nameEn,
+    title: profile.title,
+    affiliation: profile.affiliation,
+    affiliation_en: profile.affiliationEn,
+    tagline: profile.tagline,
+    lede: profile.lede,
+    creed: profile.creed,
+    intro: profile.intro,
+    stats: profile.stats,
+    metrics: profile.metrics,
+    contact: profile.contact,
+  });
   if (error) throw error;
   return 1;
+}
+
+async function seedTimeline() {
+  const { education, credentials, career } = await loadTs("../src/data/career.ts");
+  const rows = [
+    ["education", education],
+    ["credential", credentials],
+    ["career", career],
+  ].flatMap(([kind, list]) =>
+    list.map((r, i) => ({
+      kind,
+      period: r.period,
+      title: r.title,
+      note: r.note ?? null,
+      sort_order: i,
+    }))
+  );
+  await db.from("timeline").delete().neq("id", -1);
+  const { error } = await db.from("timeline").insert(rows);
+  if (error) throw error;
+  return rows.length;
+}
+
+async function seedPractice() {
+  const { practiceAreas } = await loadTs("../src/data/practice.ts");
+  const rows = practiceAreas.map((a, i) => ({
+    key: a.key,
+    no: a.no,
+    title: a.title,
+    summary: a.summary,
+    detail: a.detail,
+    tags: a.tags,
+    cv_sections: a.cvSections,
+    sort_order: i,
+  }));
+  const { error } = await db.from("practice_areas").upsert(rows, { onConflict: "key" });
+  if (error) throw error;
+  return rows.length;
 }
 
 // ---- cases -------------------------------------------------------------
@@ -132,6 +197,8 @@ async function seedNotes() {
 }
 
 await run("profile", seedProfile);
+await run("timeline", seedTimeline);
+await run("practice", seedPractice);
 await run("cases", seedCases);
 await run("writings", seedWritings);
 await run("notes", seedNotes);
