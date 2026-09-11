@@ -7,15 +7,31 @@ export const NAV = [
   { href: "/cases", label: "수행사건" },
   { href: "/notes", label: "기업법 노트" },
   { href: "/cv", label: "CV" },
+  { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "문의" },
 ] as const;
 
+/**
+ * 이 사이트의 배포 주소. canonical · OG · sitemap · JSON-LD 가 모두 여기서 나온다.
+ * ⚠️ lawlebro.com 은 법무법인 리브로 공식 홈페이지(별개 사이트)다. 여기 넣지 않는다.
+ *    커스텀 도메인을 붙이면 Vercel 환경변수 NEXT_PUBLIC_SITE_URL 만 바꾸면 된다.
+ */
 export const SITE = {
   name: "유연 변호사 · 변리사",
   firm: "법무법인 리브로",
-  /** 배포 도메인이 정해지면 교체 */
-  url: "https://lawlebro.com",
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://yoolaw.vercel.app").replace(/\/+$/, ""),
 } as const;
+
+/** 사이트 내부 경로 → 절대 URL. next.config 의 trailingSlash:true 에 맞춰 끝에 / 를 붙인다. */
+export function absUrl(path = "/"): string {
+  const [p, hash] = path.split("#");
+  let out = p.startsWith("/") ? p : `/${p}`;
+  if (!out.endsWith("/") && !/\.[a-z0-9]+$/i.test(out)) out += "/";
+  return `${SITE.url}${out === "/" ? "/" : out}${hash ? `#${hash}` : ""}`;
+}
+
+/** 노트 상세 경로 (한글 slug 인코딩) */
+export const notePath = (slug: string) => `/notes/${encodeURIComponent(slug)}/`;
 
 /**
  * 공통 면책 — 서두·말미 문언을 반드시 일치시킨다(가드 G5 면책·본문 정합).

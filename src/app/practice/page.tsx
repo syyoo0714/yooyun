@@ -4,12 +4,13 @@ import PageHero from "@/components/PageHero";
 import Disclaimer from "@/components/Disclaimer";
 import CaseList from "@/components/CaseList";
 import { getPracticeAreas, getCaseSections } from "@/lib/content";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd, serviceLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "업무분야",
-  description:
-    "특허 분쟁, 특허 자문·회피설계, 영업비밀·산업기술보호·전직금지, 디자인·상표·저작권, 직무발명·기술거래·IP 실사, 기업법무·규제·가상자산.",
-};
+const DESC =
+  "유연 변호사·변리사 업무분야 — 특허 분쟁, 특허 자문·회피설계, 영업비밀·산업기술보호·전직금지, 디자인·상표·저작권, 직무발명·기술거래·IP 실사, 기업법무·규제·가상자산.";
+
+export const metadata: Metadata = pageMeta({ title: "업무분야", description: DESC, path: "/practice" });
 
 export default async function PracticePage() {
   const [areas, sections] = await Promise.all([getPracticeAreas(), getCaseSections()]);
@@ -17,6 +18,19 @@ export default async function PracticePage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({
+            type: "CollectionPage",
+            name: "업무분야",
+            path: "/practice",
+            description: DESC,
+            extra: { hasPart: areas.map((a) => ({ "@id": serviceLd(a)["@id"] })) },
+          }),
+          ...areas.map(serviceLd),
+          breadcrumbLd([{ name: "업무분야", path: "/practice" }])
+        )}
+      />
       <PageHero
         eyebrow="Practice Areas"
         title="업무분야"
@@ -80,6 +94,9 @@ export default async function PracticePage() {
 
       <section className="section-tight">
         <div className="container">
+          <p className="small muted" style={{ marginBottom: 16 }}>
+            분야별로 자주 받는 질문은 <Link href="/faq#practice">자주 묻는 질문</Link>에 정리해 두었습니다.
+          </p>
           <Disclaimer withCases />
         </div>
       </section>

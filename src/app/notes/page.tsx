@@ -4,12 +4,14 @@ import PageHero from "@/components/PageHero";
 import NoteCard from "@/components/NoteCard";
 import Disclaimer from "@/components/Disclaimer";
 import { getNotes, SERIES_LABEL, type SeriesKey } from "@/lib/notes";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd, blogLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "기업법 노트",
-  description:
-    "유연 변호사가 쓰는 기업법·지식재산 칼럼. 특허·영업비밀·직무발명·자본시장·가상자산을 사건과 조문으로 풀어 씁니다.",
-};
+const DESC =
+  "유연 변호사가 쓰는 기업법·지식재산 칼럼. 특허·영업비밀·직무발명·자본시장·가상자산을 사건과 조문으로 풀어 씁니다.";
+
+/** ?series= 필터 화면도 canonical 은 /notes/ 하나로 모은다(중복 색인 방지). */
+export const metadata: Metadata = pageMeta({ title: "기업법 노트", description: DESC, path: "/notes" });
 
 const ORDER: SeriesKey[] = ["corporate", "essay", "ipfinance"];
 
@@ -32,6 +34,13 @@ export default async function NotesPage({
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({ type: "CollectionPage", name: "기업법 노트", path: "/notes", description: DESC }),
+          blogLd(all),
+          breadcrumbLd([{ name: "기업법 노트", path: "/notes" }])
+        )}
+      />
       <PageHero
         eyebrow="Notes"
         title="기업법 노트"

@@ -7,12 +7,13 @@ import { getProfile, getEducation, getCredentials, getCareer } from "@/lib/conte
 import { patentPractice } from "@/data/career";
 import { expertiseTags, profile as base } from "@/data/profile";
 import { writings } from "@/data/cases";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd, IDS } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "프로필",
-  description:
-    "유연 변호사·변리사 학력·자격·경력. 서울대 전기공학부, 특허법인 신성 변리사 7년, 성균관대 법학전문대학원 수석 졸업, 바른·세종을 거쳐 법무법인 리브로 대표변호사.",
-};
+const DESC =
+  "유연 변호사·변리사 학력·자격·경력. 서울대 전기공학부, 특허법인 신성 변리사 7년, 성균관대 법학전문대학원 수석 졸업, 바른·세종을 거쳐 법무법인 리브로 대표변호사.";
+
+export const metadata: Metadata = pageMeta({ title: "프로필", description: DESC, path: "/profile", type: "profile" });
 
 function Timeline({ items }: { items: { period: string; title: string; note?: string }[] }) {
   return (
@@ -40,7 +41,19 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <PageHero eyebrow="Profile" title="유 연 — 변호사 · 변리사" desc={profile.creed} />
+      <JsonLd
+        data={graph(
+          webPageLd({
+            type: "ProfilePage",
+            name: "유연 변호사 · 변리사 프로필",
+            path: "/profile",
+            description: DESC,
+            extra: { mainEntity: { "@id": IDS.person } },
+          }),
+          breadcrumbLd([{ name: "프로필", path: "/profile" }])
+        )}
+      />
+      <PageHero eyebrow="Profile" title="유연 — 변호사 · 변리사" desc={profile.creed} />
 
       <section className="section">
         <div className="container">

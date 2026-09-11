@@ -5,13 +5,13 @@ import Disclaimer from "@/components/Disclaimer";
 import { getProfile, getEducation, getCredentials, getCareer, getCaseSections } from "@/lib/content";
 import { patentPractice } from "@/data/career";
 import { expertiseTags, profile as base } from "@/data/profile";
-import { writings, publishedCases } from "@/data/cases";
+import { writings, publishedCases, totalCases } from "@/data/cases";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd, IDS } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "CV · 경력기술서",
-  description:
-    "유연 변호사·변리사 경력기술서 — 학력·자격·경력, 특허 실무 이력, 수행사건 149건, 저술·연재·강연, 대외활동.",
-};
+const DESC = `유연 변호사·변리사 경력기술서 — 학력·자격·경력, 특허 실무 이력, 수행사건 ${totalCases}건, 저술·연재·강연, 대외활동.`;
+
+export const metadata: Metadata = pageMeta({ title: "CV · 경력기술서", description: DESC, path: "/cv" });
 
 /**
  * CV 전문. 원본 260813_유연_CV_경력기술서.html 의 섹션 순서를 그대로 따른다.
@@ -58,12 +58,23 @@ export default async function CvPage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({
+            name: "유연 변호사 · 변리사 CV · 경력기술서",
+            path: "/cv",
+            description: DESC,
+            extra: { mainEntity: { "@id": IDS.person } },
+          }),
+          breadcrumbLd([{ name: "CV", path: "/cv" }])
+        )}
+      />
       <section className="page-hero">
         <div className="container">
           <span className="eyebrow">
             {profile.affiliation} · {profile.affiliationEn}
           </span>
-          <h1>유 연 — 변호사 · 변리사</h1>
+          <h1>유연 — 변호사 · 변리사</h1>
           <p>{profile.lede}</p>
           <p className="mono" style={{ marginTop: 16, fontSize: 12 }}>
             {profile.contact.address} · TEL {profile.contact.tel} · {profile.contact.email}

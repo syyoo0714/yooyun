@@ -4,12 +4,13 @@ import SectionHead from "@/components/SectionHead";
 import InquiryForm from "@/components/InquiryForm";
 import Disclaimer from "@/components/Disclaimer";
 import { getProfile } from "@/lib/content";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd, IDS } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "문의",
-  description:
-    "법무법인 리브로 · 유연 변호사 상담 문의. 서울 서초구 반포대로34길 14, 202호 · 02-532-9824 · lebro@lawlebro.com",
-};
+const DESC =
+  "법무법인 리브로 · 유연 변호사 상담 문의. 서울 서초구 반포대로34길 14, 202호 · 02-532-9824 · lebro@lawlebro.com";
+
+export const metadata: Metadata = pageMeta({ title: "문의", description: DESC, path: "/contact" });
 
 export default async function ContactPage() {
   const profile = await getProfile();
@@ -17,6 +18,18 @@ export default async function ContactPage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({
+            type: "ContactPage",
+            name: "유연 변호사 상담 문의",
+            path: "/contact",
+            description: DESC,
+            extra: { mainEntity: { "@id": IDS.firm } },
+          }),
+          breadcrumbLd([{ name: "문의", path: "/contact" }])
+        )}
+      />
       <PageHero
         eyebrow="Contact"
         title="문의"

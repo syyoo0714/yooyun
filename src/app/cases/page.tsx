@@ -4,12 +4,14 @@ import CaseList from "@/components/CaseList";
 import Disclaimer from "@/components/Disclaimer";
 import { getCaseSections } from "@/lib/content";
 import { publishedCases } from "@/data/cases";
+import JsonLd from "@/components/JsonLd";
+import { pageMeta, graph, webPageLd, breadcrumbLd } from "@/lib/seo";
+import { absUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "수행사건",
-  description:
-    "특허 분쟁, 특허 자문, 영업비밀·산업기술보호, 전직금지, 디자인·상표·저작권, 직무발명·기술거래, 기업법무, 개인정보·오픈소스, 가상자산, 약국·의료, 형사·행정 수행사건.",
-};
+const DESC =
+  "유연 변호사·변리사 수행사건 — 특허 분쟁, 특허 자문, 영업비밀·산업기술보호, 전직금지, 디자인·상표·저작권, 직무발명·기술거래, 기업법무, 개인정보·오픈소스, 가상자산, 약국·의료, 형사·행정.";
+
+export const metadata: Metadata = pageMeta({ title: "수행사건", description: DESC, path: "/cases" });
 
 export default async function CasesPage() {
   const sections = await getCaseSections();
@@ -17,6 +19,30 @@ export default async function CasesPage() {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({
+            type: "CollectionPage",
+            name: `유연 변호사 수행사건 ${total}건`,
+            path: "/cases",
+            description: DESC,
+            extra: {
+              mainEntity: {
+                "@type": "ItemList",
+                name: "수행사건 분야",
+                numberOfItems: sections.length,
+                itemListElement: sections.map((s, i) => ({
+                  "@type": "ListItem",
+                  position: i + 1,
+                  name: `${s.title} (${s.items.length}건)`,
+                  url: absUrl(`/cases#s${s.no}`),
+                })),
+              },
+            },
+          }),
+          breadcrumbLd([{ name: "수행사건", path: "/cases" }])
+        )}
+      />
       <PageHero
         eyebrow="Representative Matters"
         title={`수행사건 ${total}건`}

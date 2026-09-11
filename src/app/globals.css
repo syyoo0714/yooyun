@@ -918,6 +918,75 @@ a.card:hover,
   color: var(--accent);
 }
 
+/* 노트 저자 표기 (E-E-A-T) */
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.byline a {
+  color: var(--fg-2);
+  font-weight: 600;
+}
+.byline a:hover {
+  color: var(--accent);
+}
+
+/* 자주 묻는 질문 — 답변 우선형 문답 (AEO) */
+.faq {
+  border-top: 1px solid var(--border-soft);
+}
+.faq details {
+  border-bottom: 1px solid var(--border-soft);
+}
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-2);
+  cursor: pointer;
+  list-style: none;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--accent);
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+.faq summary h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--fg);
+}
+.faq summary:hover h3 {
+  color: var(--accent-hover);
+}
+.faq summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+.faq details p {
+  padding: 0 var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: var(--fg-2);
+}
+
 /* ---------- 13. Disclaimer ---------- */
 .disclaimer {
   border: 1px solid var(--border-soft);

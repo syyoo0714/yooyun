@@ -25,7 +25,8 @@ npm run build && npm start
 | `/` | 마스트헤드 · 이력 요약 4칸 · 소개 · 업무분야 6 · 특허 실무 · 대표 수행사건 · 최근 노트 6 · 문의 | Static |
 | `/profile` | 소개 · 전문분야 태그 · 학력 · 자격 · 경력 · 특허 실무 · 저술 · 대외활동 | Static |
 | `/practice` | 업무분야 6개, 각 분야 아래 근거 수행사건 | Static |
-| `/cases` | 수행사건 146건 전체(11개 분류) + 리브로 기게시 성공사례 | Static |
+| `/cases` | 수행사건 149건 전체(11개 분류) + 리브로 기게시 성공사례 | Static |
+| `/faq` | 자주 묻는 질문 17문항 (이력 · 업무분야 · 상담) — FAQPage 구조화 데이터 | Static |
 | `/notes` | 기업법 노트 119편 아카이브 (시리즈 필터) | Dynamic (searchParams) |
 | `/notes/[slug]` | 노트 상세 — 3줄 요약 · 본문 · 태그 · 같은 시리즈 | SSG 119개 |
 | `/cv` | CV 전문 18개 섹션 · A4 인쇄 | Static |
@@ -42,7 +43,8 @@ try/catch 안에서만 Supabase를 부르고, 환경변수 미설정·오류·�
 src/data/profile.ts        정체성 · 연락처 · 지표 · 전문분야 태그   ← CV 01·02
 src/data/career.ts         학력 · 자격 · 경력 · 특허 실무 이력      ← CV 01·03
 src/data/practice.ts       업무분야 6묶음 (cvSections 로 사건 연결)
-src/data/cv.generated.json 수행사건 146건 · 저술 · 기게시 성공사례  ← scripts/import-cv.mjs
+src/data/cv.generated.json 수행사건 149건 · 저술 · 기게시 성공사례  ← scripts/import-cv.mjs
+src/data/faq.ts            자주 묻는 질문 (위 데이터에서 조립 — 새 사실 없음)
 src/data/notes.generated.json + content/notes/*.txt  노트 119편    ← scripts/import-notes.mjs
 ```
 
@@ -90,10 +92,26 @@ RLS 요지
 게시 가능한 것은 CV의 익명화본(`cv.generated.json`)뿐이며, CV 자체가
 "당사자명과 사건번호는 모두 제거하고 기술·분야로만 기재" 원칙으로 작성된 문서다.
 
-## 5. 남은 일
+## 5. SEO · AEO · GEO
 
-- [ ] `public/portrait.jpg` — 초상 사진 (현재 placeholder)
+| 파일 | 역할 |
+|---|---|
+| `src/lib/site.ts` `SITE.url` | 배포 주소 (기본 `https://yoolaw.vercel.app`, 환경변수 `NEXT_PUBLIC_SITE_URL` 로 교체). ⚠️ `lawlebro.com` 은 법인 사이트라 넣지 않는다 |
+| `src/lib/seo.ts` | `pageMeta()` = 페이지별 canonical·OG·Twitter / schema.org 노드 빌더 |
+| `src/app/layout.tsx` | 전역 JSON-LD: `WebSite` + `Person`(유연) + `LegalService`(리브로) — `@id` 로 연결 |
+| 각 `page.tsx` | `ProfilePage` · `CollectionPage`+`Service`×6 · `FAQPage` · `Blog` · `BlogPosting` · `ContactPage` + `BreadcrumbList` |
+| `src/app/robots.ts` | 전체 허용 + AI 크롤러(GPTBot·ClaudeBot·PerplexityBot·Google-Extended·Yeti 등) 명시 허용, `/admin/` 차단 |
+| `src/app/sitemap.ts` | 정적 8 + 노트 전편 |
+| `src/app/llms.txt/route.ts` | 생성형 AI용 사이트 요약본(llmstxt.org 형식) |
+| `public/naver….html` | 네이버 서치어드바이저 소유확인 |
+
+규칙: 페이지를 새로 만들면 `export const metadata = pageMeta({...})` 로 canonical 을 반드시 넣는다
+(layout 에는 canonical 을 두지 않는다 — 빠뜨린 페이지가 전부 홈을 가리키게 됨).
+구조화 데이터에도 화면에 없는 사실·평점·수상을 넣지 않는다(G1·G6).
+
+## 6. 남은 일
+
 - [ ] `/admin` 편집 화면 6종 구현 (현재 대시보드 골격만)
-- [ ] Supabase 프로젝트 연결 + `scripts/seed-supabase.mjs` 실행
-- [ ] 배포 도메인 확정 → `src/lib/site.ts` 의 `SITE.url` 교체
+- [ ] 커스텀 도메인 연결 시 Vercel 에 `NEXT_PUBLIC_SITE_URL` 설정 + 네이버·구글에 새 도메인 재등록
+- [ ] 네이버 서치어드바이저 · 구글 서치콘솔에 `/sitemap.xml` 제출
 - [ ] CV 18번 "확인필요" 2건 — KYPG 정식명칭, 저서 출간일·ISBN

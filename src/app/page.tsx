@@ -1,25 +1,50 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import SectionHead from "@/components/SectionHead";
 import NoteCard from "@/components/NoteCard";
 import Portrait from "@/components/Portrait";
 import Disclaimer from "@/components/Disclaimer";
-import { getProfile, getPracticeAreas } from "@/lib/content";
+import JsonLd from "@/components/JsonLd";
+import { getProfile, getPracticeAreas, getCaseSections } from "@/lib/content";
 import { getNotes } from "@/lib/notes";
 import { casesWithOutcome, totalCases } from "@/data/cases";
 import { patentPractice } from "@/data/career";
+import { buildFaq } from "@/data/faq";
+import { pageMeta, graph, webPageLd, IDS } from "@/lib/seo";
+import { absUrl } from "@/lib/site";
+
+const DESC =
+  "유연 변호사·변리사(법무법인 리브로 대표변호사). 서울대 전기공학부, 변리사 7년, 성균관대 법학전문대학원 수석 졸업. 특허침해소송·영업비밀·전직금지·디자인·상표 등 지식재산 및 기술분쟁을 다룹니다.";
+
+export const metadata: Metadata = pageMeta({ description: DESC, path: "/", type: "profile" });
 
 export default async function HomePage() {
-  const [profile, areas, notes] = await Promise.all([
+  const [profile, areas, notes, sections] = await Promise.all([
     getProfile(),
     getPracticeAreas(),
     getNotes(),
+    getCaseSections(),
   ]);
 
   const highlights = casesWithOutcome.slice(0, 8);
   const recent = notes.slice(0, 6);
+  const faqTop = buildFaq(sections)[0].items.slice(0, 4);
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          webPageLd({
+            name: "유연 변호사 · 변리사 | 법무법인 리브로",
+            path: "/",
+            description: DESC,
+            extra: {
+              mainEntity: { "@id": IDS.person },
+              primaryImageOfPage: { "@type": "ImageObject", url: absUrl("/portrait-sq-960.jpg") },
+            },
+          })
+        )}
+      />
       {/* ── 마스트헤드 ───────────────────────────────── */}
       <section className="hero">
         <div className="container">
@@ -30,7 +55,7 @@ export default async function HomePage() {
 
           <div className="hero-inner">
             <div>
-              <span className="eyebrow">Attorney at Law · Patent Attorney</span>
+              <span className="eyebrow">유연 변호사 · 변리사 — {profile.affiliation}</span>
               <h1>{profile.tagline}</h1>
               <p className="drop">{profile.lede}</p>
 
@@ -172,10 +197,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 07 문의 ──────────────────────────────────── */}
+      {/* ── 07 자주 묻는 질문 (AEO) ──────────────────── */}
+      <section className="section">
+        <div className="container-narrow">
+          <SectionHead no="06" title="자주 묻는 질문" more="/faq" moreLabel="질문 전체" />
+          <div className="faq">
+            {faqTop.map((f, i) => (
+              <details key={f.q} open={i === 0}>
+                <summary>
+                  <h3>{f.q}</h3>
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 08 문의 ──────────────────────────────────── */}
       <section className="section">
         <div className="container">
-          <SectionHead no="06" title="문의" />
+          <SectionHead no="07" title="문의" />
           <div className="grid-2">
             <div>
               <p className="lede">

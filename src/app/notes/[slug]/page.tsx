@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import NoteCard from "@/components/NoteCard";
 import Disclaimer from "@/components/Disclaimer";
+import JsonLd from "@/components/JsonLd";
 import { getNote, getNotes, getRelatedNotes, toBlocks } from "@/lib/notes";
+import { notePath } from "@/lib/site";
+import { pageMeta, graph, breadcrumbLd, blogPostingLd } from "@/lib/seo";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -17,11 +20,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const note = await getNote(slug);
-  if (!note) return { title: "찾을 수 없는 글" };
+  if (!note) return { title: "찾을 수 없는 글", robots: { index: false } };
   return {
-    title: note.title,
-    description: note.dek || note.summary[0],
-    openGraph: { title: note.title, description: note.dek, type: "article" },
+    ...pageMeta({
+      title: note.title,
+      description: note.dek || note.summary[0],
+      path: notePath(note.slug),
+      type: "article",
+      publishedTime: note.publishedAt,
+      tags: note.tags,
+    }),
+    keywords: note.tags,
   };
 }
 
@@ -35,12 +44,28 @@ export default async function NotePage({ params }: Params) {
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          blogPostingLd(note, note.body.split(/\s+/).filter(Boolean).length || undefined),
+          breadcrumbLd([
+            { name: "기업법 노트", path: "/notes" },
+            { name: note.title, path: notePath(note.slug) },
+          ])
+        )}
+      />
       <PageHero eyebrow={note.seriesLabel} title={note.title} desc={note.dek} />
 
       <article className="section">
         <div className="container-narrow">
-          <p className="note-date" style={{ marginBottom: 24 }}>
-            {note.publishedAt}
+          <p className="byline">
+            <span>글</span>
+            <Link href="/profile" rel="author">
+              유연 변호사 · 변리사
+            </Link>
+            <span>· 법무법인 리브로 ·</span>
+            <time className="note-date" dateTime={note.publishedAt}>
+              {note.publishedAt}
+            </time>
           </p>
 
           {note.summary.length > 0 && (
