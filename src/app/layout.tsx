@@ -11,6 +11,7 @@ import { siteGraph } from "@/lib/seo";
  */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
+  verification: { other: { "naver-site-verification": "48d5e9f449c9167aa3221b29c1ad22b1ff302fb9" } },
   applicationName: SITE.name,
   authors: [{ name: "유연", url: absUrl("/profile") }],
   creator: "유연",
