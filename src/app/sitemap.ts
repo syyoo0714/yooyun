@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/notes", priority: 0.8, freq: "weekly" },
     { path: "/press", priority: 0.6, freq: "monthly" },
     { path: "/contact", priority: 0.6, freq: "monthly" },
+    { path: "/privacy", priority: 0.3, freq: "monthly" },
   ];
 
   return [

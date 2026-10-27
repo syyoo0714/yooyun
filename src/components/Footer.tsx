@@ -48,7 +48,10 @@ export default function Footer() {
         </div>
 
         <div className="bottom">
-          <span>© {new Date().getFullYear()} 법무법인 리브로. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} 법무법인 리브로. All rights reserved. ·{" "}
+            <Link href="/privacy">개인정보처리방침</Link>
+          </span>
           <span>{AD_NOTICE}</span>
         </div>
       </div>
