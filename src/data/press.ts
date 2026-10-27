@@ -25,6 +25,34 @@ export const PRESS: PressItem[] = [
     url: "https://www.lawtimes.co.kr/news/articleView.html?idxno=228179",
     kind: "기고",
   },
+  {
+    title: "“약국을 지키는 법률 전략”… 한국젊은약사회 세미나 성료",
+    outlet: "약사공론",
+    date: "2026-08-11",
+    url: "https://www.kpanews.co.kr/news/articleView.html?idxno=540247",
+    kind: "보도",
+  },
+  {
+    title: "“약국 성장을 위한 법률 전략” KYPG, 리브로와 세미나",
+    outlet: "데일리팜",
+    date: "2026-08-10",
+    url: "https://new.dailypharm.com/user/news/341289",
+    kind: "보도",
+  },
+  {
+    title: "영업비밀침해, 퇴사자·협력업체의 기술자료 유출에 대응하는 방법",
+    outlet: "로이슈",
+    date: "2026-07-07",
+    url: "https://www.lawissue.co.kr/view.php?ud=2026070712095127846cf2d78c68_12",
+    kind: "보도",
+  },
+  {
+    title: "지식재산권 분쟁에 휘말리지 않고 ‘내 아이디어 지키는 법’",
+    outlet: "로이슈",
+    date: "2026-04-29",
+    url: "https://www.lawissue.co.kr/view.php?ud=2026042910234863676cf2d78c68_12",
+    kind: "보도",
+  },
 ];
 
 export const pressSorted = (): PressItem[] =>
