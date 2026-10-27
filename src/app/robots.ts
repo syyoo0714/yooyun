@@ -16,7 +16,11 @@ const AI_BOTS = [
   "Perplexity-User",
   "Google-Extended",
   "Applebot-Extended",
+  "Amazonbot",
+  "Meta-ExternalAgent",
+  "CCBot",
   "Bingbot",
+  "NaverBot",
   "Yeti", // 네이버
   "Daumoa", // 다음
 ];
