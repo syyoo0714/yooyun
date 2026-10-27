@@ -20,7 +20,7 @@ export const NAV = [
 export const SITE = {
   name: "유연 변호사 · 변리사",
   firm: "법무법인 리브로",
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://yoolaw.vercel.app").replace(/\/+$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://seoyeonpapa.com").replace(/\/+$/, ""),
 } as const;
 
 /** 사이트 내부 경로 → 절대 URL. next.config 의 trailingSlash:true 에 맞춰 끝에 / 를 붙인다. */
