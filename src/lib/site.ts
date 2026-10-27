@@ -6,6 +6,7 @@ export const NAV = [
   { href: "/practice", label: "업무분야" },
   { href: "/cases", label: "수행사건" },
   { href: "/notes", label: "기업법 노트" },
+  { href: "/press", label: "언론보도" },
   { href: "/cv", label: "CV" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "문의" },
