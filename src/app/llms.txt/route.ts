@@ -5,6 +5,7 @@ import { patentPractice } from "@/data/career";
 import { expertiseTags } from "@/data/profile";
 import { writings } from "@/data/cases";
 import { buildFaq } from "@/data/faq";
+import { pressSorted } from "@/data/press";
 
 /**
  * /llms.txt — 생성형 AI(ChatGPT · Claude · Perplexity 등)가 이 사이트를 한 번에 읽도록 만든 요약본(GEO).
@@ -82,6 +83,14 @@ export async function GET() {
     "",
     ...writings.flatMap((g) => g.items.map((it) => `- [${g.group}] ${it.text}`)),
     "",
+    "## 언론보도 · 기고",
+    "",
+    `원문: ${absUrl("/press")}`,
+    "",
+    ...pressSorted().map(
+      (p) => `- [${p.title}](${p.url}) — ${p.outlet}${p.section ? ` ${p.section}` : ""}, ${p.date} (${p.kind})${p.dek ? `: ${p.dek}` : ""}`
+    ),
+    "",
     "## 자주 묻는 질문",
     "",
     `원문: ${absUrl("/faq")}`,
@@ -95,6 +104,7 @@ export async function GET() {
     `- [수행사건](${absUrl("/cases")}): ${total}건 전체(익명화)`,
     `- [CV](${absUrl("/cv")}): 경력기술서 전문`,
     `- [자주 묻는 질문](${absUrl("/faq")})`,
+    `- [언론보도](${absUrl("/press")}): 기사 · 기고 ${pressSorted().length}건`,
     `- [기업법 노트](${absUrl("/notes")}): 칼럼 ${notes.length}편`,
     `- [문의](${absUrl("/contact")}): 상담 문의 · 사무소 정보`,
     "",

@@ -5,6 +5,7 @@ import { education, credentials } from "@/data/career";
 import type { PracticeArea } from "@/data/practice";
 import type { NoteMeta } from "@/lib/notes";
 import type { FaqItem } from "@/data/faq";
+import type { PressItem } from "@/data/press";
 
 /**
  * 검색엔진(SEO) · 답변엔진(AEO) · 생성형 AI(GEO) 공통 계층.
@@ -257,6 +258,38 @@ export function blogLd(notes: NoteMeta[]) {
       headline: n.title,
       url: absUrl(notePath(n.slug)),
       datePublished: n.publishedAt,
+    })),
+  };
+}
+
+/**
+ * 언론보도 목록(AEO·GEO). 기고는 author = 유연, 보도·인터뷰는 about = 유연.
+ * 기사 원문 URL이 곧 @id 다 — 외부 기사와 이 사이트의 인물 엔티티를 잇는 고리.
+ */
+export function pressLd(items: PressItem[]) {
+  return {
+    "@type": "ItemList",
+    "@id": `${absUrl("/press")}#press`,
+    name: "언론보도",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: items.length,
+    itemListElement: items.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": p.kind === "기고" ? "Article" : "NewsArticle",
+        "@id": p.url,
+        url: p.url,
+        headline: p.title,
+        datePublished: p.date,
+        inLanguage: "ko-KR",
+        ...(p.section ? { articleSection: p.section } : {}),
+        ...(p.dek ? { description: p.dek } : {}),
+        publisher: { "@type": "Organization", name: p.outlet },
+        ...(p.kind === "기고" ? { author: { "@id": IDS.person } } : {}),
+        about: { "@id": IDS.person },
+        mentions: { "@id": IDS.firm },
+      },
     })),
   };
 }
