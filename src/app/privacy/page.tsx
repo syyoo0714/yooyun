@@ -5,7 +5,7 @@ import { pageMeta, graph, breadcrumbLd, webPageLd } from "@/lib/seo";
 
 /**
  * 개인정보처리방침 — 개인정보 보호법 제30조 제1항 각 호 기재사항 기준.
- * 구글 OAuth 앱(YYOO_ADs) 브랜드 인증에 이 주소(/privacy)를 등록한다.
+ * 구글 OAuth 앱(법무법인 리브로 (LEBRO)) 브랜드 인증에 이 주소(/privacy)를 등록한다.
  * 수집 항목·장치가 바뀌면(예: 광고 태그 추가) 이 문서와 시행일을 함께 고친다.
  */
 const DESC = "유연 변호사 · 법무법인 리브로 웹사이트(seoyeonpapa.com)의 개인정보처리방침.";
@@ -58,9 +58,9 @@ const SECTIONS: { h: string; body: (string | string[])[] }[] = [
   {
     h: "7. Google 서비스 연동 시 받는 정보",
     body: [
-      "법인은 내부 업무용 도구(앱 이름 YYOO_ADs)로 법인이 소유한 Google Ads 계정에 접속하여 광고 키워드 검색량·입찰가 등 계정 데이터를 조회합니다. 이 과정에서 Google 계정 인증 정보(액세스 토큰)와 Google Ads 계정 데이터를 받습니다.",
+      "법인은 내부 업무용 도구(앱 이름 「법무법인 리브로 (LEBRO)」)로 법인이 소유한 Google Ads 계정에 접속하여 광고 키워드 검색량·입찰가 등 계정 데이터를 조회합니다. 이 과정에서 Google 계정 인증 정보(액세스 토큰)와 Google Ads 계정 데이터를 받습니다.",
       ["받은 정보는 법인 광고 운영 판단에만 쓰고 제3자에게 제공하거나 판매하지 않습니다.", "인증 토큰은 법인 내부 컴퓨터에만 보관하며, 연동이 필요 없어지면 Google 계정 설정에서 접근 권한을 철회하고 토큰을 삭제합니다.", "이 도구는 법인 외부 이용자의 Google 계정 정보를 수집하지 않습니다."],
-      "YYOO_ADs’ use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.",
+      "법무법인 리브로 (LEBRO)’s use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.",
     ],
   },
   {
