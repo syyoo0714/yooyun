@@ -61,6 +61,10 @@ export const profile = {
     bizNo: "458-81-03850",
     site: "https://lawlebro.com",
     blog: "https://blog.naver.com/jussv",
+    lawtalk: "https://www.lawtalk.co.kr/directory/profile/7591-%EC%9C%A0%EC%97%B0",
+    firmProfile: "https://lawlebro.com/lawyers_board/135",
+    linkedin: "https://www.linkedin.com/in/%EC%97%B0-%EC%9C%A0-425a57222/",
+    facebook: "https://www.facebook.com/profile.php?id=100001533596897",
   },
 
   memberships: ["대한변호사협회 회원", "대한변리사회(KPAA) 회원"],

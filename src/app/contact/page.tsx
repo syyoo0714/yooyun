@@ -84,6 +84,15 @@ export default async function ContactPage() {
                     <a href={c.blog} target="_blank" rel="noreferrer">
                       <span>네이버 블로그 ↗</span>
                     </a>
+                    <a href={c.lawtalk} target="_blank" rel="noreferrer">
+                      <span>로톡 상담 예약 ↗</span>
+                    </a>
+                    <a href={c.linkedin} target="_blank" rel="noreferrer">
+                      <span>링크드인 ↗</span>
+                    </a>
+                    <a href={c.facebook} target="_blank" rel="noreferrer">
+                      <span>페이스북 ↗</span>
+                    </a>
                   </dd>
                 </div>
               </dl>

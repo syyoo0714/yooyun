@@ -106,7 +106,7 @@ export function personLd() {
     knowsLanguage: ["ko", "en"],
     email: c.email,
     telephone: "+82-2-532-9824",
-    sameAs: [c.blog],
+    sameAs: [c.blog, c.lawtalk, c.firmProfile, c.linkedin, c.facebook],
     subjectOf: pressSorted().map((p) => ({
       "@type": pressType(p),
       "@id": p.url,

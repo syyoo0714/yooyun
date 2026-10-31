@@ -43,6 +43,11 @@ export default function Footer() {
                   법무법인 리브로 ↗
                 </a>
               </li>
+              <li>
+                <a href={c.lawtalk} target="_blank" rel="noreferrer">
+                  로톡 상담 예약 ↗
+                </a>
+              </li>
             </ul>
           </div>
         </div>
