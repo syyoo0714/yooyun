@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import JsonLd from "@/components/JsonLd";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE, absUrl } from "@/lib/site";
 import { siteGraph } from "@/lib/seo";
 
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body>
         <JsonLd data={siteGraph()} />
         <SiteChrome>{children}</SiteChrome>
+        <Analytics />
       </body>
     </html>
   );
