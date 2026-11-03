@@ -3,6 +3,7 @@ import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import JsonLd from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/next";
+import ClickTracker from "@/components/ClickTracker";
 import { SITE, absUrl } from "@/lib/site";
 import { siteGraph } from "@/lib/seo";
 
@@ -69,6 +70,7 @@ export default function RootLayout({
         <JsonLd data={siteGraph()} />
         <SiteChrome>{children}</SiteChrome>
         <Analytics />
+        <ClickTracker />
       </body>
     </html>
   );

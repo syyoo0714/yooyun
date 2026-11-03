@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { buildView, sendView } from "@/lib/track";
 
 /**
  * Next 16 proxy (구 middleware).
@@ -8,10 +9,17 @@ import { NextResponse, type NextRequest } from "next/server";
  *
  * 환경변수가 없으면(로컬 골격 확인) 아무 것도 하지 않고 통과시킨다.
  */
-export async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.next({ request });
+
+  // 방문 기록(15일 유입 분석 보고서용). 응답을 기다리게 하지 않는다.
+  event.waitUntil(
+    buildView(request)
+      .then((row) => (row ? sendView(row) : undefined))
+      .catch(() => undefined)
+  );
 
   let response = NextResponse.next({ request });
 
