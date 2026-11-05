@@ -20,16 +20,18 @@ const AI_BOTS = [
   "Meta-ExternalAgent",
   "CCBot",
   "Bingbot",
-  "NaverBot",
-  "Yeti", // 네이버
   "Daumoa", // 다음
 ];
+
+/** 네이버는 블로그(jussv)가 같은 글의 원본이라 노트만 수집에서 뺀다(261105). */
+const NAVER_BOTS = ["NaverBot", "Yeti"];
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/admin/"] },
       { userAgent: AI_BOTS, allow: "/", disallow: ["/admin/"] },
+      { userAgent: NAVER_BOTS, allow: "/", disallow: ["/admin/", "/notes/"] },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,
   };

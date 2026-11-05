@@ -90,7 +90,7 @@ export async function getNote(slug: string): Promise<Note | null> {
     if (client) {
       const { data, error } = await client
         .from("notes")
-        .select("slug, title, series_key, series_label, dek, summary, tags, published_at, body")
+        .select("slug, title, series_key, series_label, dek, summary, tags, published_at, body, source_file")
         .eq("slug", decoded)
         .eq("is_published", true)
         .maybeSingle();
@@ -105,6 +105,7 @@ export async function getNote(slug: string): Promise<Note | null> {
           summary: (data.summary ?? []) as string[],
           tags: (data.tags ?? []) as string[],
           publishedAt: data.published_at ?? "",
+          sourceFile: data.source_file ?? undefined,
           body: data.body ?? "",
         };
       }
@@ -142,22 +143,31 @@ export function toBlocks(body: string): Block[] {
   const lines = body.replace(/\r\n/g, "\n").split("\n");
   const blocks: Block[] = [];
 
-  // 3줄 요약 블록 끝 이후부터 본문으로 본다.
-  let start = 0;
+  // 페이지가 따로 그리는 줄(제목·부제·①②③ 3줄 요약)만 건너뛴다.
+  // 블로그 판결분석형 글은 요약이 본문 중간에 「하나·둘·셋」으로 적혀 있어,
+  // ①②③를 끝까지 찾다 본문 전체를 건너뛰지 않도록 요약 머리 뒤 12줄 안에서만 찾는다.
+  const skip = new Set<number>([0]);
   const sumIdx = lines.findIndex((l) => l.includes("3줄 요약"));
   if (sumIdx >= 0) {
     let k = sumIdx + 1;
     let found = 0;
-    while (k < lines.length && found < 3) {
+    const end = Math.min(lines.length, sumIdx + 12);
+    while (k < end && found < 3) {
       if (/^[①②③]/.test(lines[k].trim())) found += 1;
       k += 1;
     }
-    start = k;
+    if (found === 3) {
+      for (let i = sumIdx; i < k; i += 1) skip.add(i);
+      if (sumIdx <= 4) for (let i = 0; i < sumIdx; i += 1) skip.add(i); // 제목·부제
+    } else {
+      skip.add(sumIdx); // 요약 머리만 빼고 본문은 그대로
+    }
   } else {
-    start = 2; // 제목 · 부제 제외
+    skip.add(1); // 부제
   }
 
-  for (let i = start; i < lines.length; i += 1) {
+  for (let i = 0; i < lines.length; i += 1) {
+    if (skip.has(i)) continue;
     const t = lines[i].trim();
     if (!t) continue;
     if (t.startsWith("#")) continue; // 해시태그 줄

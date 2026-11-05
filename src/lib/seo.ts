@@ -249,6 +249,9 @@ export function blogPostingLd(n: NoteMeta, wordCount?: number) {
     author: { "@id": IDS.person },
     publisher: { "@id": IDS.firm },
     isPartOf: { "@id": `${absUrl("/notes")}#blog` },
+    ...(n.sourceFile?.startsWith("jussv/")
+      ? { isBasedOn: `https://blog.naver.com/jussv/${n.sourceFile.slice(6)}` }
+      : {}),
   };
 }
 
