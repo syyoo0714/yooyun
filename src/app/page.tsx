@@ -107,6 +107,19 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── 전직금지 진단 띠 배너 ───────────────────────── */}
+      <section className="section-tight">
+        <div className="container">
+          <Link href="/diagnosis" className="diag-band">
+            <div>
+              <h3>경업금지 약정, 법원에서도 통할까?</h3>
+              <p>판결 900건으로 만든 자가진단으로 내 약정의 효력을 확인하세요</p>
+            </div>
+            <span className="btn btn-accent">진단 시작 →</span>
+          </Link>
+        </div>
+      </section>
+
       {/* ── 03 업무분야 ──────────────────────────────── */}
       <section className="section">
         <div className="container">
@@ -227,6 +240,9 @@ export default async function HomePage() {
               <div className="hero-cta">
                 <Link href="/contact" className="btn btn-accent">
                   상담 문의하기
+                </Link>
+                <Link href="/diagnosis" className="btn btn-ghost">
+                  전직금지·경업금지 무료 자가진단 →
                 </Link>
               </div>
             </div>

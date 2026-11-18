@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV } from "@/lib/site";
+import { NAV, NAV_CTA } from "@/lib/site";
 
 export default function Header() {
   const pathname = usePathname();
@@ -36,6 +36,13 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href={NAV_CTA.href}
+            className="nav-cta"
+            aria-current={isActive(NAV_CTA.href) ? "page" : undefined}
+          >
+            {NAV_CTA.label}
+          </Link>
         </nav>
 
         <button
@@ -54,6 +61,9 @@ export default function Header() {
       {open && (
         <nav className="nav-sheet" aria-label="모바일 메뉴">
           <div className="container" style={{ paddingBlock: 8 }}>
+            <Link href={NAV_CTA.href} className="nav-sheet-cta">
+              {NAV_CTA.label}
+            </Link>
             {NAV.map((item) => (
               <Link
                 key={item.href}

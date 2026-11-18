@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import InquiryForm from "@/components/InquiryForm";
@@ -41,6 +42,9 @@ export default async function ContactPage() {
           <div className="grid-2">
             <div>
               <SectionHead title="상담 문의" />
+              <p className="page-sublink-inline">
+                문의 전에 <Link href="/faq" className="more">자주 묻는 질문(FAQ) →</Link>
+              </p>
               <InquiryForm />
             </div>
 

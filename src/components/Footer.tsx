@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { profile } from "@/data/profile";
-import { NAV, AD_NOTICE } from "@/lib/site";
+import { FOOTER_NAV, AD_NOTICE } from "@/lib/site";
 
 export default function Footer() {
   const c = profile.contact;
@@ -33,7 +33,7 @@ export default function Footer() {
           <div>
             <h4>Menu</h4>
             <ul>
-              {NAV.filter((n) => n.href !== "/").map((n) => (
+              {FOOTER_NAV.map((n) => (
                 <li key={n.href}>
                   <Link href={n.href}>{n.label}</Link>
                 </li>

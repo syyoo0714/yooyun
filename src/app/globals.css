@@ -527,6 +527,51 @@ a.card:hover,
   font-weight: 700;
   background: var(--surface-warm);
 }
+.nav-cta {
+  margin-left: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--accent-on);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: background var(--motion-fast) var(--ease-standard);
+}
+.nav-cta:hover,
+.nav-cta[aria-current="page"] {
+  background: var(--accent-hover);
+}
+.nav-sheet a.nav-sheet-cta {
+  color: var(--accent);
+  font-weight: 700;
+}
+.diag-band {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-6) var(--space-6);
+  border: 1px solid var(--border-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.diag-band h3 {
+  margin: 0 0 6px;
+}
+.diag-band p {
+  margin: 0;
+  color: var(--fg-2);
+}
+.page-sublink {
+  padding-top: var(--space-4);
+  text-align: right;
+}
+.page-sublink-inline {
+  margin: 0 0 var(--space-4);
+  color: var(--fg-2);
+}
 .nav-toggle {
   width: 44px;
   height: 44px;

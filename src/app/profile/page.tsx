@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import Portrait from "@/components/Portrait";
@@ -54,6 +55,10 @@ export default async function ProfilePage() {
         )}
       />
       <PageHero eyebrow="Profile" title="유연 — 변호사 · 변리사" desc={profile.creed} />
+
+      <div className="container page-sublink">
+        <Link href="/cv" className="more">CV 전문 보기 →</Link>
+      </div>
 
       <section className="section">
         <div className="container">

@@ -1,10 +1,23 @@
 /** 사이트 전역 상수 — 네비게이션 · SEO · 면책문구를 한 곳에서 관리한다. */
 
 export const NAV = [
-  { href: "/", label: "홈" },
   { href: "/profile", label: "프로필" },
   { href: "/practice", label: "업무분야" },
   { href: "/cases", label: "수행사건" },
+  { href: "/notes", label: "기업법 노트" },
+  { href: "/press", label: "언론보도" },
+  { href: "/contact", label: "문의" },
+] as const;
+
+/** 상단 메뉴 오른쪽 끝 강조 버튼. */
+export const NAV_CTA = { href: "/diagnosis", label: "전직금지 무료진단" } as const;
+
+/** 하단 메뉴 — 상단에서 뺀 CV·FAQ와 진단까지 모두 싣는다. */
+export const FOOTER_NAV = [
+  { href: "/profile", label: "프로필" },
+  { href: "/practice", label: "업무분야" },
+  { href: "/cases", label: "수행사건" },
+  { href: "/diagnosis", label: "전직금지 진단" },
   { href: "/press", label: "언론보도" },
   { href: "/notes", label: "기업법 노트" },
   { href: "/cv", label: "CV" },
