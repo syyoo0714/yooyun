@@ -62,3 +62,13 @@
 .msg { margin-top: 10px; font-size: var(--text-sm); color: var(--fg); }
 .row2 { display: grid; gap: 10px; }
 @media (min-width: 560px) { .row2 { grid-template-columns: 1fr 1fr; } }
+
+/* 261118 결과 공유·저장, 추가 문항 안내 */
+.shareRow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px 0 4px; }
+.more { border: 1.5px dashed var(--border); border-radius: 12px; padding: 14px 16px; margin-top: 10px; font-size: var(--text-sm); color: var(--fg-2); line-height: 1.6; }
+.more button { margin-top: 10px; }
+@media print {
+  :global(header), :global(footer), :global(nav) { display: none !important; }
+  .cta, .shareRow, .more, .noPrint { display: none !important; }
+  .card { border: 0; padding: 0; }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { submitDiagnosis, type DiagState } from "@/app/diagnosis/actions";
 import Disclaimer from "@/components/Disclaimer";
 import { notePath } from "@/lib/site";
@@ -53,6 +53,28 @@ const Qs: Q[] = [
   { k: "s_재직중", t: "퇴사 전 재직 중에 이직처·창업을 준비하면서 회사 일과 겹치는 일을 했나요?", h: "재직 중 경쟁 회사 일을 돕거나, 회사 거래를 새 회사로 돌린 경우 등입니다.", o: yn },
   { k: "s_위약금", t: "약정에 위반 시 위약금이나 손해배상 금액이 정해져 있나요?", o: yn },
 ];
+// 261118 기본 문항 = 지수를 크게 움직이는 것부터. 나머지는 「더 정확히」 단계.
+const CORE = ["q1_4_일반적업무", "x_업무범위", "q9_금지범위", "q4_약정형식", "x_근속", "q2_1_받은돈", "q2_금액원", "q5_약정기간개월", "q7_직위"];
+const QS_CORE = CORE.map((k) => Qs.find((q) => q.k === k)!);
+const QS_EXTRA = Qs.filter((q) => !CORE.includes(q.k));
+const N_CORE = QS_CORE.filter((q) => !q.show).length;
+const N_EXTRA = QS_EXTRA.filter((q) => !q.show).length;
+
+/** 진단 단계 기록 — page_views(kind=click, target=「진단|단계」). 유입 보고서의 연락 행동 집계에서는 뺀다. */
+function track(ev: string) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return;
+  fetch(`${url}/rest/v1/page_views`, {
+    method: "POST",
+    keepalive: true,
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=minimal" },
+    body: JSON.stringify({ kind: "click", path: "/diagnosis/", target: `진단|${ev}`.slice(0, 300) }),
+  }).catch(() => undefined);
+}
+const enc = (o: unknown) => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const dec = (sx: string) => JSON.parse(decodeURIComponent(escape(atob(sx.replace(/-/g, "+").replace(/_/g, "/")))));
+
 const SIDE: [string, keyof typeof ENGINE.side.items, string][] = [
   ["p2_자료반출", "data", "회사 자료 반출"],
   ["s_고객", "client", "전 회사 고객 접촉"],
@@ -145,19 +167,41 @@ function label(q: Q, v: Val | Val[] | undefined): string {
 }
 
 export default function Diagnosis({ cards }: { cards: Card[] }) {
-  const [stage, setStage] = useState<"intro" | "quiz" | "text" | "result">("intro");
+  const [stage, setStage] = useState<"intro" | "quiz" | "gate" | "text" | "result">("intro");
   const [a, setA] = useState<Ans>({});
   const [i, setI] = useState(0);
+  const [deep, setDeep] = useState(false);
   const [clause, setClause] = useState("");
   const [dest, setDest] = useState("");
+  const [toast, setToast] = useState("");
   const [state, action, pending] = useActionState<DiagState, FormData>(submitDiagnosis, null);
 
-  const qs = Qs.filter((q) => !q.show || q.show(a));
+  const qs = [...QS_CORE, ...(deep ? QS_EXTRA : [])].filter((q) => !q.show || q.show(a));
+  const coreLen = QS_CORE.filter((q) => !q.show || q.show(a)).length;
   const q = qs[Math.min(i, qs.length - 1)];
-  const next = () => { if (i + 1 >= qs.length) setStage("text"); else setI(i + 1); window.scrollTo(0, 0); };
+  const next = () => {
+    if (i + 1 >= qs.length) {
+      if (!deep) { track("기본완료"); setStage("gate"); }
+      else { track("추가완료"); setStage("text"); }
+    } else setI(i + 1);
+    window.scrollTo(0, 0);
+  };
   const prev = () => { if (i > 0) setI(i - 1); else setStage("intro"); };
+  const goDeep = () => { track("추가시작"); setDeep(true); setI(coreLen); setStage("quiz"); window.scrollTo(0, 0); };
+
+  useEffect(() => {
+    const m = location.hash.match(/r=([A-Za-z0-9_-]+)/);
+    if (!m) return;
+    try {
+      const o = dec(m[1]) as { a: Ans; d?: boolean };
+      setA(o.a || {}); setDeep(!!o.d); setStage("result"); track("공유링크열람");
+    } catch { /* 잘못된 링크는 무시 */ }
+  }, []);
+  useEffect(() => { if (state?.ok) track("상담신청"); }, [state]);
+  useEffect(() => { if (stage === "result") track(deep ? "결과|정밀" : "결과|기본"); }, [stage, deep]);
 
   const choose = (v: Val) => {
+    if (!(q.k in a)) track(`문항|${q.k}`);
     if (!q.multi) { setA({ ...a, [q.k]: v }); setTimeout(next, 120); return; }
     const cur = (Array.isArray(a[q.k]) ? a[q.k] : []) as Val[];
     let nv: Val[];
@@ -211,10 +255,10 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
       <div className={s.intro}>
         <div className={s.trust}>
           <div><b>약 900건</b><span>분석 판결</span></div>
-          <div><b>{Qs.filter((x) => !x.show).length}문항</b><span>약 4분</span></div>
-          <div><b>무료</b><span>바로 결과 확인</span></div>
+          <div><b>{N_CORE}문항</b><span>약 2분 · 더 정확히 {N_EXTRA}문항</span></div>
+          <div><b>무료</b><span>가입 없이 바로 결과</span></div>
         </div>
-        <button className="btn btn-primary" onClick={() => { setStage("quiz"); setI(0); }}>진단 시작하기</button>
+        <button className="btn btn-primary" onClick={() => { track("시작"); setStage("quiz"); setI(0); }}>내 약정 점수 확인하기</button>
         <Disclaimer diag="short" />
         <p className={s.who}>유연 변호사·변리사가 전직금지·경업금지 판결을 직접 분류해 진단 기준을 만들었습니다. 입력하신 내용은 상담을 신청하시기 전까지 저장되지 않습니다.</p>
       </div>
@@ -236,6 +280,21 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
         <div className={s.nav}>
           <button className={s.back} onClick={prev}>← 이전 질문</button>
           {q.multi && <button className="btn btn-primary" disabled={!((a[q.k] as Val[] | undefined)?.length)} onClick={next}>다음</button>}
+        </div>
+      </div>
+    );
+
+  if (stage === "gate")
+    return (
+      <div className={s.card}>
+        <div className={s.qn}>기본 {coreLen}문항 완료</div>
+        <div className={s.q}>지금 결과를 볼까요, 조금 더 정확히 볼까요?</div>
+        <p className={s.qh}>
+          {N_EXTRA}문항(약 2분)을 더 답하시면 업종·이직처·퇴사 경위·회사 조치까지 지수에 반영되고, 자료 반출·고객 접촉·재직 중 준비·위약금 조항처럼 약정과 별도로 회사가 청구할 수 있는 부분도 함께 확인됩니다.
+        </p>
+        <div className={s.nav}>
+          <button className={s.back} onClick={() => { setStage("text"); window.scrollTo(0, 0); }}>지금 결과 보기</button>
+          <button className="btn btn-primary" onClick={goDeep}>{N_EXTRA}문항 더 답하기</button>
         </div>
       </div>
     );
@@ -274,6 +333,23 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
         이 구간 판결 {R.bd.n}건 가운데 약정이 전부 또는 일부 유효로 인정된 판결은 <b>{R.bd.rate}%</b>입니다. {R.bs}
       </p>
       <Disclaimer diag="index" />
+      <div className={s.shareRow}>
+        <button className="btn btn-ghost" onClick={() => {
+          track("공유");
+          const u = `${location.origin}${location.pathname}#r=${enc({ a, d: deep })}`;
+          const t = `전직금지·경업금지 진단 · 약정 효력 지수 ${R.ix} (${R.bn})`;
+          if (navigator.share) navigator.share({ title: t, text: t, url: u }).catch(() => undefined);
+          else navigator.clipboard?.writeText(u).then(() => setToast("결과 링크를 복사했습니다. 카카오톡 등에 붙여 넣으시면 됩니다."));
+        }}>결과 공유하기</button>
+        <button className="btn btn-ghost" onClick={() => { track("PDF저장"); window.print(); }}>PDF로 저장</button>
+      </div>
+      {toast && <p className={s.msg} style={{ textAlign: "center" }}>{toast}</p>}
+      {!deep && (
+        <div className={s.more}>
+          지금 결과는 기본 {coreLen}문항으로 계산했습니다. {N_EXTRA}문항을 더 답하시면 업종·이직처·퇴사 경위까지 반영되고, 약정과 별도로 회사가 청구할 수 있는 부분도 확인됩니다.
+          <div><button className="btn btn-primary" onClick={goDeep}>{N_EXTRA}문항 더 답하고 정확히 보기</button></div>
+        </div>
+      )}
       {R.brief && <p className={s.brief}><b>입력하신 조건</b> {R.brief}</p>}
 
       <h3 className={s.h}>지수를 올린 사정</h3>
@@ -281,8 +357,10 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
       <h3 className={s.h}>지수를 낮춘 사정</h3>
       {R.dn.length ? R.dn.map((z) => <div key={z[1]} className={`${s.fac} ${s.dn}`}><em>−{-z[0]}</em><span>{z[1]}</span></div>) : <div className={s.fac}><span>해당 사정이 없습니다.</span></div>}
 
-      <h3 className={s.h}>약정과 별도로 회사가 청구할 수 있는 부분 · {R.sides.length} / 4</h3>
-      {R.sides.length ? R.sides.map((z) => (
+      <h3 className={s.h}>약정과 별도로 회사가 청구할 수 있는 부분{deep ? ` · ${R.sides.length} / 4` : ""}</h3>
+      {!deep ? (
+        <div className={s.fac}><span>자료 반출·고객 접촉·재직 중 준비·위약금 조항 문항에 답하시면 확인할 수 있습니다. 위의 「더 답하고 정확히 보기」를 눌러 주세요.</span></div>
+      ) : R.sides.length ? R.sides.map((z) => (
         <div key={z.name} className={s.fac}>
           <span><b>{z.name}</b> {z.text} (약정이 무효이거나 효력 판단 없이 끝난 판결 {ENGINE.side.pop}건 중 {z.n}건, 예: {z.ex})</span>
         </div>
@@ -336,7 +414,7 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
       </div>
 
       <div style={{ marginTop: 24 }}><Disclaimer diag="full" /></div>
-      <button className="btn btn-ghost" style={{ marginTop: 16 }} onClick={() => { setA({}); setClause(""); setDest(""); setI(0); setStage("quiz"); }}>다시 진단하기</button>
+      <button className="btn btn-ghost" style={{ marginTop: 16 }} onClick={() => { track("다시진단"); history.replaceState(null, "", location.pathname); setA({}); setDeep(false); setToast(""); setClause(""); setDest(""); setI(0); setStage("quiz"); }}>다시 진단하기</button>
     </div>
   );
 }
