@@ -5,3 +5,7 @@ out/
 .env
 next-env.d.ts
 *.tsbuildinfo
+
+# 작업 백업(로컬 보관)
+_백업/
+supabase/.temp/
