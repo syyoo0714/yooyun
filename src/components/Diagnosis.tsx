@@ -43,15 +43,15 @@ const Qs: Q[] = [
   { k: "q9_금지범위", multi: true, t: "무엇을 금지하나요?", h: "해당하는 것을 모두 골라 주세요.", o: [["특정 경쟁사 몇 곳에 가는 것", "특정 경쟁사만"], ["동종 개업이나 고객 유인", "개업·고객유인만"], ["동종업체 취업 전부", "동종업체 취업 전부"]] },
   { k: "x_업무범위", t: "금지하는 일의 범위는 어떻게 되어 있나요?", h: "약정 문구에 「동일한 업무」, 「경쟁 업무」처럼 하던 일로 한정하는 표현이 있는지 보세요.", o: [["전 회사에서 하던 것과 같은 업무만 금지", "same"], ["업무와 상관없이 그 업계 회사에 가는 것 자체를 금지", "all"]] },
   { k: "q3_경쟁사명시", t: "약정에 경쟁사 이름이 적혀 있나요?", o: yn },
-  { k: "q2_1_받은돈", multi: true, t: "경업금지와 관련해 회사에서 받은 돈이 있나요?", h: "받은 것을 모두 골라 주세요.", o: [["경업금지 대가로 따로 받은 돈", "명시대가"], ["퇴직위로금", "퇴직위로금"], ["재직 중 높은 연봉·처우", "재직중고액연봉·처우"], ["리텐션·인센티브(반환 조건부)", "리텐션·인센티브"], ["스톡옵션·주식", "스톡옵션·주식"], ["받은 것 없음", "없음"]] },
+  { k: "q2_1_받은돈", multi: true, t: "경업금지와 관련해 회사에서 받은 돈이 있나요?", h: "받은 것을 모두 골라 주세요.", o: [["경업금지 대가로 따로 받은 돈", "명시대가"], ["퇴직위로금(퇴직금 외 별도 지급)", "퇴직위로금"], ["재직 중 높은 연봉·처우", "재직중고액연봉·처우"], ["리텐션·인센티브(일정 기간 근무 조건, 일찍 나가면 반환)", "리텐션·인센티브"], ["스톡옵션(정한 값에 주식을 살 권리)·주식", "스톡옵션·주식"], ["받은 것 없음", "없음"]] },
   { k: "q2_금액원", show: (a) => Array.isArray(a["q2_1_받은돈"]) && (a["q2_1_받은돈"] as Val[]).includes("명시대가"), t: "경업금지 대가는 모두 합쳐 얼마였나요?", o: [["월 수당 등 합계 2천만 원 이하", 10000000], ["2천만 원 ~ 1억 원", 50000000], ["1억 원 이상", 150000000]] },
-  { k: "q6_퇴직경위", t: "어떻게 퇴사했나요(퇴사 예정인가요)?", o: [["스스로 퇴사", "자진"], ["해고·권고사직", "해고·권고사직"], ["계약 만료", "계약만료"]] },
+  { k: "q6_퇴직경위", t: "어떻게 퇴사했나요(퇴사 예정인가요)?", o: [["스스로 퇴사", "자진"], ["해고·권고사직(회사 권유로 사직)", "해고·권고사직"], ["계약 만료", "계약만료"]] },
   { k: "x_이직처", t: "어디로 옮기나요(옮겼나요)?", o: [["같은 업계 경쟁 회사에 취업", "competitor"], ["같은 업종으로 창업·개업", "startup"], ["해외 회사", "overseas"], ["다른 업계이거나 아직 정하지 않음", "other"]] },
-  { k: "x_회사조치", t: "회사는 지금 어떤 조치를 했나요?", o: [["전직금지가처분을 신청했거나 하겠다고 알려 옴", "injunction"], ["내용증명·소송으로 위약금·손해배상을 청구", "suit"], ["아직 아무 조치 없음", "none"]] },
+  { k: "x_회사조치", t: "회사는 지금 어떤 조치를 했나요?", o: [["전직금지가처분(본안 소송 전에 이직부터 막는 법원 절차)을 신청했거나 하겠다고 알려 옴", "injunction"], ["내용증명(보낸 내용을 우체국이 증명하는 우편)·소송으로 위약금·손해배상을 청구", "suit"], ["아직 아무 조치 없음", "none"]] },
   { k: "p2_자료반출", t: "퇴사하면서 회사 자료(파일·고객 명단 등)를 옮겨 두었거나, 회사가 그렇게 문제 삼고 있나요?", h: "아래 네 문항은 지수에 넣지 않고, 약정과 별도로 회사가 청구할 수 있는 부분을 알려 드리는 데 씁니다.", o: yn },
   { k: "s_고객", t: "퇴사 후 전 회사 고객에게 연락했거나, 그 고객과 거래할 예정인가요?", o: yn },
   { k: "s_재직중", t: "퇴사 전 재직 중에 이직처·창업을 준비하면서 회사 일과 겹치는 일을 했나요?", h: "재직 중 경쟁 회사 일을 돕거나, 회사 거래를 새 회사로 돌린 경우 등입니다.", o: yn },
-  { k: "s_위약금", t: "약정에 위반 시 위약금이나 손해배상 금액이 정해져 있나요?", o: yn },
+  { k: "s_위약금", t: "약정에 위반 시 위약금(어기면 내기로 미리 정한 돈)이나 손해배상 금액이 정해져 있나요?", o: yn },
 ];
 // 261118 기본 문항 = 지수를 크게 움직이는 것부터. 나머지는 「더 정확히」 단계.
 const CORE = ["q1_4_일반적업무", "x_업무범위", "q9_금지범위", "q4_약정형식", "x_근속", "q2_1_받은돈", "q2_금액원", "q5_약정기간개월", "q7_직위"];
@@ -61,15 +61,29 @@ const N_CORE = QS_CORE.filter((q) => !q.show).length;
 const N_EXTRA = QS_EXTRA.filter((q) => !q.show).length;
 
 /** 진단 단계 기록 — page_views(kind=click, target=「진단|단계」). 유입 보고서의 연락 행동 집계에서는 뺀다. */
+// 261120 사람 단위로 세기 위한 브라우저 번호(c- 로 시작, 서버 쪽 하루 해시와 구분). 저장이 막히면 이번 화면 동안만 쓴다.
+let vidMemo: string | null = null;
+function vid() {
+  if (vidMemo) return vidMemo;
+  let v: string | null = null;
+  try { v = localStorage.getItem("dx_vid"); } catch { /* 저장 불가 */ }
+  if (!v) {
+    v = "c-" + Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-6);
+    try { localStorage.setItem("dx_vid", v); } catch { /* 저장 불가 */ }
+  }
+  vidMemo = v.slice(0, 32);
+  return vidMemo;
+}
 function track(ev: string) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return;
+  const device = /iPad|Tablet/i.test(navigator.userAgent) ? "tablet" : /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "mobile" : "desktop";
   fetch(`${url}/rest/v1/page_views`, {
     method: "POST",
     keepalive: true,
     headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=minimal" },
-    body: JSON.stringify({ kind: "click", path: "/diagnosis/", target: `진단|${ev}`.slice(0, 300) }),
+    body: JSON.stringify({ kind: "click", path: "/diagnosis/", target: `진단|${ev}`.slice(0, 300), visitor: vid(), device }),
   }).catch(() => undefined);
 }
 const enc = (o: unknown) => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -197,6 +211,8 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
       setA(o.a || {}); setDeep(!!o.d); setStage("result"); track("공유링크열람");
     } catch { /* 잘못된 링크는 무시 */ }
   }, []);
+  // 261120 진입 기록 — 화면 스크립트가 실제로 돈 브라우저만 남는다(링크 미리보기 봇은 빠진다).
+  useEffect(() => { track("진입"); }, []);
   useEffect(() => { if (state?.ok) track("상담신청"); }, [state]);
   useEffect(() => { if (stage === "result") track(deep ? "결과|정밀" : "결과|기본"); }, [stage, deep]);
 

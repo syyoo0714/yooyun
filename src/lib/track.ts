@@ -28,7 +28,8 @@ const BOTS: [RegExp, string][] = [
   [/Amazonbot/i, "Amazonbot"],
   [/YandexBot/i, "Yandex"],
   [/DuckDuckBot/i, "DuckDuckGo"],
-  [/kakaotalk-scrap|Kakao/i, "Kakao미리보기"],
+  // 261120 카톡 안에서 연 화면(브라우저 이름에 KAKAOTALK)은 사람이다 — 미리보기 봇(kakaotalk-scrap)만 잡는다.
+  [/kakaotalk-scrap/i, "Kakao미리보기"],
   [/Slackbot|Twitterbot|LinkedInBot|TelegramBot|Discordbot|WhatsApp/i, "링크미리보기"],
   [/bot|crawl|spider|slurp|scrapy|python-requests|curl|wget|httpclient|headless|lighthouse/i, "기타봇"],
 ];
