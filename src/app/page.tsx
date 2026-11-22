@@ -113,7 +113,7 @@ export default async function HomePage() {
           <Link href="/diagnosis" className="diag-band">
             <div>
               <h3>경업금지 약정, 법원에서도 통할까?</h3>
-              <p>판결 900건으로 만든 자가진단으로 내 약정의 효력을 확인하세요</p>
+              <p>판결 1,034건으로 만든 자가진단으로 내 약정의 효력을 확인하세요</p>
             </div>
             <span className="btn btn-accent">진단 시작 →</span>
           </Link>

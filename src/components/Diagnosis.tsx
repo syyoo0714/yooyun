@@ -270,7 +270,7 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
     return (
       <div className={s.intro}>
         <div className={s.trust}>
-          <div><b>약 900건</b><span>분석 판결</span></div>
+          <div><b>1,034건</b><span>분석 판결</span></div>
           <div><b>{N_CORE}문항</b><span>약 2분 · 더 정확히 {N_EXTRA}문항</span></div>
           <div><b>무료</b><span>가입 없이 바로 결과</span></div>
         </div>
