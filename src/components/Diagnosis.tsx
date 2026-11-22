@@ -373,6 +373,28 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
       <h3 className={s.h}>지수를 낮춘 사정</h3>
       {R.dn.length ? R.dn.map((z) => <div key={z[1]} className={`${s.fac} ${s.dn}`}><em>−{-z[0]}</em><span>{z[1]}</span></div>) : <div className={s.fac}><span>해당 사정이 없습니다.</span></div>}
 
+      <h3 className={s.h}>판결에서 나온 숫자</h3>
+      {(() => {
+        // 261122 v10 — 판결 1,034건 중 법원이 약정 효력을 판단한 578건에서 뽑은 기간 단축·인정 금액·절차별 비율
+        const X = ENGINE.extra, P = X.period, M = X.money, PR = X.proc;
+        const won = (v: number) => `${Math.round(v / 10000).toLocaleString()}만 원`;
+        const p = a["q5_약정기간개월"] as number | null | undefined;
+        const pz = p == null ? null : p <= 12 ? { ...P.s, t: "1년 이하" } : p <= 24 ? { ...P.m, t: "1년 초과 2년 이하" } : { ...P.l, t: "2년 초과" };
+        const inj = a["x_회사조치"] === "injunction";
+        return (
+          <>
+            <div className={s.fac}><span><b>금지 기간</b> {pz
+              ? (pz.cut ? `약정 기간이 ${pz.t}인 판결 가운데 약정을 유효로 본 ${pz.n}건 중 ${pz.cut}건은 법원이 기간을 줄여 인정했고, 줄여 인정한 기간의 중간값은 ${pz.med}개월입니다.`
+                : `약정 기간이 ${pz.t}인 판결 가운데 약정을 유효로 본 ${pz.n}건에서는 법원이 기간을 줄인 판결이 없었습니다.`)
+              : `약정을 유효로 본 판결 가운데 약정 기간이 1년 초과 2년 이하면 ${P.m.n}건 중 ${P.m.cut}건, 2년을 넘으면 ${P.l.n}건 중 ${P.l.cut}건에서 법원이 기간을 줄여 인정했습니다.`}</span></div>
+            <div className={s.fac}><span><b>회사가 인정받은 금액</b> 회사 청구가 받아들여진 판결 가운데 위약금·손해배상이 인정된 {M.n}건의 인정액 중간값은 {won(M.med)}이고, 가운데 절반은 {won(M.q1)}~{won(M.q3)} 사이입니다. 청구한 금액 가운데 인정된 비율의 중간값은 {M.rmed}%입니다({M.rn}건).</span></div>
+            <div className={s.fac}><span><b>절차별 회사 청구 인정 비율</b> {inj
+              ? `회사가 전직금지가처분을 신청한 사건에서 회사 청구가 전부 또는 일부 받아들여진 비율은 ${PR["가처분"].rate}%(${PR["가처분"].n}건)입니다. 본안 1심은 ${PR["본안1심"].rate}%(${PR["본안1심"].n}건), 항소심은 ${PR["항소심"].rate}%(${PR["항소심"].n}건)입니다.`
+              : `회사 청구가 전부 또는 일부 받아들여진 비율은 가처분 ${PR["가처분"].rate}%(${PR["가처분"].n}건), 본안 1심 ${PR["본안1심"].rate}%(${PR["본안1심"].n}건), 항소심 ${PR["항소심"].rate}%(${PR["항소심"].n}건)입니다.`}</span></div>
+          </>
+        );
+      })()}
+
       <h3 className={s.h}>약정과 별도로 회사가 청구할 수 있는 부분{deep ? ` · ${R.sides.length} / 4` : ""}</h3>
       {!deep ? (
         <div className={s.fac}><span>자료 반출·고객 접촉·재직 중 준비·위약금 조항 문항에 답하시면 확인할 수 있습니다. 위의 「더 답하고 정확히 보기」를 눌러 주세요.</span></div>
