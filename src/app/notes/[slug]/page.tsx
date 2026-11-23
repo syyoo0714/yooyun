@@ -5,9 +5,9 @@ import PageHero from "@/components/PageHero";
 import NoteCard from "@/components/NoteCard";
 import Disclaimer from "@/components/Disclaimer";
 import JsonLd from "@/components/JsonLd";
-import { getNote, getNotes, getRelatedNotes, toBlocks } from "@/lib/notes";
+import { getNote, getNotes, getRelatedNotes, toBlocks, extractFaq } from "@/lib/notes";
 import { notePath } from "@/lib/site";
-import { pageMeta, graph, breadcrumbLd, blogPostingLd } from "@/lib/seo";
+import { pageMeta, graph, breadcrumbLd, blogPostingLd, noteFaqLd } from "@/lib/seo";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -40,6 +40,7 @@ export default async function NotePage({ params }: Params) {
   if (!note) notFound();
 
   const blocks = toBlocks(note.body);
+  const faq = extractFaq(note.body);
   const related = await getRelatedNotes(note);
 
   return (
@@ -47,6 +48,7 @@ export default async function NotePage({ params }: Params) {
       <JsonLd
         data={graph(
           blogPostingLd(note, note.body.split(/\s+/).filter(Boolean).length || undefined),
+          ...(faq.length > 0 ? [noteFaqLd(note, faq)] : []),
           breadcrumbLd([
             { name: "기업법 노트", path: "/notes" },
             { name: note.title, path: notePath(note.slug) },

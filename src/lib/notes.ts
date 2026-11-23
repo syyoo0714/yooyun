@@ -194,3 +194,25 @@ export function toBlocks(body: string): Block[] {
   while (blocks.at(-1)?.kind === "rule") blocks.pop();
   return blocks;
 }
+
+/**
+ * 본문의 「Q. 질문」 줄과 바로 뒤 답 문단을 묶어 FAQ 항목으로 뽑는다(FAQPage 구조화 데이터용).
+ * 답은 Q 줄 다음 줄부터 빈 줄·다음 Q·구분선·소제목 전까지. 「A.」 머리는 걷어낸다.
+ */
+export function extractFaq(body: string): { q: string; a: string }[] {
+  const lines = body.replace(/\r\n/g, "\n").split("\n").map((l) => l.trim());
+  const out: { q: string; a: string }[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const m = lines[i].match(/^Q[.:]\s*(.+)$/);
+    if (!m) continue;
+    const ans: string[] = [];
+    let k = i + 1;
+    while (k < lines.length && lines[k] && !/^(Q[.:]|▣|━|★|✅)/.test(lines[k])) {
+      ans.push(lines[k].replace(/^A[.:]\s*/, ""));
+      k += 1;
+    }
+    if (ans.length) out.push({ q: m[1].trim(), a: ans.join(" ") });
+    i = k - 1;
+  }
+  return out;
+}

@@ -229,6 +229,23 @@ export function faqLd(items: FaqItem[]) {
   };
 }
 
+/** 노트 본문의 자주 묻는 질문 → 그 글 주소에 붙는 FAQPage(AEO). */
+export function noteFaqLd(n: NoteMeta, items: FaqItem[]) {
+  const url = absUrl(notePath(n.slug));
+  return {
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    url,
+    inLanguage: "ko-KR",
+    isPartOf: { "@id": `${url}#article` },
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
+
 export function blogPostingLd(n: NoteMeta, wordCount?: number) {
   const url = absUrl(notePath(n.slug));
   return {
