@@ -18,6 +18,14 @@ export type PressItem = {
 
 export const PRESS: PressItem[] = [
   {
+    title: "퇴사 후 경쟁사 이직, 전직금지·경업금지약정 있어도 무조건 막히지 않는다",
+    outlet: "로리더",
+    date: "2026-11-25",
+    url: "https://www.lawleader.co.kr/news/articleView.html?idxno=20497",
+    dek: "“전직금지약정은 서명한 문서가 있느냐보다 회사가 지키려는 정보가 무엇인지, 그 제한에 걸맞은 대가가 있었는지가 결론을 가른다”",
+    kind: "기고",
+  },
+  {
     title: "대학 리뷰 데이터 무단 사용의 증명책임",
     outlet: "법률신문",
     section: "판례평석",
