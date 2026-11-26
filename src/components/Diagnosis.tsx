@@ -270,7 +270,7 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
     return (
       <div className={s.intro}>
         <div className={s.trust}>
-          <div><b>1,066건</b><span>분석 판결</span></div>
+          <div><b>1,124건</b><span>분석 판결</span></div>
           <div><b>{N_CORE}문항</b><span>약 2분 · 더 정확히 {N_EXTRA}문항</span></div>
           <div><b>무료</b><span>가입 없이 바로 결과</span></div>
         </div>
@@ -375,7 +375,7 @@ export default function Diagnosis({ cards }: { cards: Card[] }) {
 
       <h3 className={s.h}>판결에서 나온 숫자</h3>
       {(() => {
-        // 261124 v11 — 판결 1,066건 중 법원이 약정 효력을 판단한 607건에서 뽑은 기간 단축·인정 금액·절차별 비율
+        // 261127 v11 재적합 — 판결 1,124건 중 법원이 약정 효력을 판단한 638건에서 뽑은 기간 단축·인정 금액·절차별 비율
         const X = ENGINE.extra, P = X.period, M = X.money, PR = X.proc;
         const won = (v: number) => `${Math.round(v / 10000).toLocaleString()}만 원`;
         const p = a["q5_약정기간개월"] as number | null | undefined;
