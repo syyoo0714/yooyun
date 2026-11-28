@@ -5,6 +5,8 @@ import NoteCard from "@/components/NoteCard";
 import Portrait from "@/components/Portrait";
 import Disclaimer from "@/components/Disclaimer";
 import JsonLd from "@/components/JsonLd";
+import ReviewCard from "@/components/ReviewCard";
+import { reviews, REVIEW_TOTAL, REVIEW_KEYWORDS, LAWTALK_PROFILE } from "@/data/reviews";
 import { getProfile, getPracticeAreas, getCaseSections } from "@/lib/content";
 import { getNotes } from "@/lib/notes";
 import { casesWithOutcome, totalCases } from "@/data/cases";
@@ -186,11 +188,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 06 기업법 노트 ───────────────────────────── */}
+      {/* ── 로톡 의뢰인 후기 ─────────────────────────── */}
       <section className="section">
         <div className="container">
           <SectionHead
             no="05"
+            title="의뢰인 후기"
+            more="/reviews"
+            moreLabel={`로톡 후기 ${REVIEW_TOTAL}건 보기`}
+          />
+          <p className="muted" style={{ marginBottom: 24 }}>
+            로톡 유료 전화상담 뒤 의뢰인이 남긴 후기를 원문 그대로 옮겼습니다. 의뢰인이 가장 많이 고른 표현은 「
+            {REVIEW_KEYWORDS[0].label}」({REVIEW_KEYWORDS[0].pct}%)입니다.
+          </p>
+          <div className="home-reviews">
+            {reviews.slice(0, 3).map((r, i) => (
+              <ReviewCard review={r} key={i} />
+            ))}
+          </div>
+          <p className="small muted" style={{ marginTop: 16 }}>
+            출처:{" "}
+            <a href={LAWTALK_PROFILE} target="_blank" rel="noreferrer">
+              로톡 유연 변호사 프로필 「의뢰인후기」
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* ── 06 기업법 노트 ───────────────────────────── */}
+      <section className="section">
+        <div className="container">
+          <SectionHead
+            no="06"
             title="기업법 노트"
             more="/notes"
             moreLabel={`${notes.length}편 전체`}
@@ -213,7 +242,7 @@ export default async function HomePage() {
       {/* ── 07 자주 묻는 질문 (AEO) ──────────────────── */}
       <section className="section">
         <div className="container-narrow">
-          <SectionHead no="06" title="자주 묻는 질문" more="/faq" moreLabel="질문 전체" />
+          <SectionHead no="07" title="자주 묻는 질문" more="/faq" moreLabel="질문 전체" />
           <div className="faq">
             {faqTop.map((f, i) => (
               <details key={f.q} open={i === 0}>
@@ -230,7 +259,7 @@ export default async function HomePage() {
       {/* ── 08 문의 ──────────────────────────────────── */}
       <section className="section">
         <div className="container">
-          <SectionHead no="07" title="문의" />
+          <SectionHead no="08" title="문의" />
           <div className="grid-2">
             <div>
               <p className="lede">

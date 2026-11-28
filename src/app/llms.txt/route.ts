@@ -1,3 +1,4 @@
+import { reviews, REVIEW_TOTAL, REVIEW_ASOF, REVIEW_KEYWORDS, LAWTALK_PROFILE } from "@/data/reviews";
 import { absUrl, notePath, DISCLAIMER, CASE_NOTICE } from "@/lib/site";
 import { getProfile, getEducation, getCredentials, getCareer, getPracticeAreas, getCaseSections } from "@/lib/content";
 import { getNotes, SERIES_LABEL, type SeriesKey } from "@/lib/notes";
@@ -95,6 +96,12 @@ export async function GET() {
       (p) => `- [${p.title}](${p.url}) — ${p.outlet}${p.section ? ` ${p.section}` : ""}, ${p.date} (${p.kind})${p.dek ? `: ${p.dek}` : ""}`
     ),
     "",
+    "## 의뢰인 후기 (로톡 유료 전화상담)",
+    "",
+    `로톡 프로필에 표시된 의뢰인 후기 ${REVIEW_TOTAL}건 중 공개 후기 원문(${REVIEW_ASOF} 기준). 원문 페이지: ${absUrl("/reviews")} · 출처: ${LAWTALK_PROFILE}`,
+    `의뢰인이 자주 고른 표현: ${REVIEW_KEYWORDS.map((k) => `${k.label} ${k.pct}%`).join(", ")}`,
+    ...reviews.map((r) => `- 「${[r.title, ...r.body].join(" ")}」 (${r.field} 분야 · 로톡 ${r.kind} · ${r.month} · 의뢰인 ${r.user})`),
+    "",
     "## 자주 묻는 질문",
     "",
     `원문: ${absUrl("/faq")}`,
@@ -106,6 +113,7 @@ export async function GET() {
     `- [프로필](${absUrl("/profile")}): 소개 · 학력 · 자격 · 경력 · 저술 · 대외활동`,
     `- [업무분야](${absUrl("/practice")}): 6개 분야와 분야별 수행사건`,
     `- [수행사건](${absUrl("/cases")}): ${total}건 전체(익명화)`,
+    `- [의뢰인 후기](${absUrl("/reviews")}): 로톡 유료 전화상담 후기 원문`,
     `- [CV](${absUrl("/cv")}): 경력기술서 전문`,
     `- [자주 묻는 질문](${absUrl("/faq")})`,
     `- [전직금지·경업금지 진단](${absUrl("/diagnosis")}): 법원이 경업·전직금지 약정의 효력을 판단한 근로자 사건 638건(그중 무효 357건)을 분석한 무료 자가진단. 약정 효력 지수(0~100), 약정과 별도로 회사가 청구할 수 있는 부분(자료 반출·고객 접촉·재직 중 경쟁 준비·위약금 조항), 비슷한 실제 판결`,
